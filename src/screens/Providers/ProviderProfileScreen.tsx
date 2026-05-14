@@ -6,8 +6,6 @@ import {
   ScrollView,
   Image,
   TouchableOpacity,
-  Linking,
-  Alert,
   Dimensions,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -15,6 +13,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { MOCK_PROVIDERS } from '../../constants/data';
+import { useFavorites } from '../../context/FavoritesContext';
+import { openWhatsApp, callPhone } from '../../utils/whatsapp';
 import { Colors, Spacing, Typography, BorderRadius, Shadow } from '../../constants/theme';
 import StarRating from '../../components/common/StarRating';
 import Badge from '../../components/common/Badge';
@@ -56,6 +56,7 @@ export default function ProviderProfileScreen() {
   const route = useRoute<RouteProp<{ params: Params }, 'params'>>();
   const { providerId } = route.params;
   const [activeTab, setActiveTab] = useState<'infos' | 'avis'>('infos');
+  const { isFavorite, toggleFavorite } = useFavorites();
 
   const provider = MOCK_PROVIDERS.find((p) => p.id === providerId);
 
@@ -72,28 +73,7 @@ export default function ProviderProfileScreen() {
     ? { uri: provider.avatar }
     : { uri: `${AVATAR_PLACEHOLDER}${encodeURIComponent(provider.name)}&background=1B6B3A&color=fff&size=400` };
 
-  async function openWhatsApp() {
-    const number = provider.whatsapp.replace(/\s/g, '').replace('+', '');
-    const message = encodeURIComponent(
-      `Bonjour ${provider.name}, j'ai trouvé votre profil sur AlloService et je souhaite faire appel à vos services.`
-    );
-    const url = `whatsapp://send?phone=${number}&text=${message}`;
-    try {
-      const supported = await Linking.canOpenURL(url);
-      if (supported) {
-        await Linking.openURL(url);
-      } else {
-        Alert.alert('WhatsApp non disponible', 'Veuillez installer WhatsApp pour contacter ce prestataire.');
-      }
-    } catch {
-      Alert.alert('Erreur', 'Impossible d\'ouvrir WhatsApp.');
-    }
-  }
-
-  async function callProvider() {
-    const url = `tel:${provider.phone.replace(/\s/g, '')}`;
-    await Linking.openURL(url);
-  }
+  // Contact helpers imported from utils/whatsapp.ts
 
   return (
     <View style={{ flex: 1, backgroundColor: Colors.background }}>
@@ -119,6 +99,17 @@ export default function ProviderProfileScreen() {
           onPress={() => navigation.goBack()}
         >
           <Ionicons name="arrow-back" size={22} color="#fff" />
+        </TouchableOpacity>
+        {/* Favorite button overlay */}
+        <TouchableOpacity
+          style={[styles.favoriteOverlay, { top: insets.top + Spacing.sm }]}
+          onPress={() => provider && toggleFavorite(provider)}
+        >
+          <Ionicons
+            name={provider && isFavorite(provider.id) ? 'heart' : 'heart-outline'}
+            size={22}
+            color={provider && isFavorite(provider.id) ? '#FF4D6D' : '#fff'}
+          />
         </TouchableOpacity>
 
         {/* Profile card */}
@@ -159,11 +150,11 @@ export default function ProviderProfileScreen() {
 
           {/* Action buttons */}
           <View style={styles.actions}>
-            <TouchableOpacity style={styles.whatsappBtn} onPress={openWhatsApp} activeOpacity={0.85}>
+            <TouchableOpacity style={styles.whatsappBtn} onPress={() => openWhatsApp(provider.whatsapp, provider.name)} activeOpacity={0.85}>
               <Ionicons name="logo-whatsapp" size={20} color="#fff" />
               <Text style={styles.whatsappText}>WhatsApp</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.callBtn} onPress={callProvider} activeOpacity={0.85}>
+            <TouchableOpacity style={styles.callBtn} onPress={() => callPhone(provider.phone)} activeOpacity={0.85}>
               <Ionicons name="call-outline" size={20} color={Colors.primary} />
               <Text style={styles.callText}>Appeler</Text>
             </TouchableOpacity>
@@ -291,6 +282,16 @@ const styles = StyleSheet.create({
   backOverlay: {
     position: 'absolute',
     left: Spacing.base,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  favoriteOverlay: {
+    position: 'absolute',
+    right: Spacing.base,
     width: 40,
     height: 40,
     borderRadius: 20,

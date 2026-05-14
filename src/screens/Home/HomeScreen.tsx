@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  TextInput,
   TouchableOpacity,
   FlatList,
   Modal,
@@ -15,6 +14,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../context/AuthContext';
+import { useNotifications } from '../../context/NotificationContext';
 import ServiceCategoryCard from '../../components/cards/ServiceCategoryCard';
 import ProviderCard from '../../components/cards/ProviderCard';
 import { SERVICE_CATEGORIES, MOCK_PROVIDERS, CITIES } from '../../constants/data';
@@ -24,20 +24,16 @@ export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<any>();
   const { userProfile, user } = useAuth();
+  const { unreadCount } = useNotifications();
   const [selectedCity, setSelectedCity] = useState('Douala');
   const [showCityModal, setShowCityModal] = useState(false);
-  const [search, setSearch] = useState('');
 
   const displayName = userProfile?.name || user?.displayName || 'là';
   const firstName = displayName.split(' ')[0];
 
   const featuredProviders = MOCK_PROVIDERS.filter((p) => p.verified && p.available).slice(0, 4);
 
-  const filteredCategories = search
-    ? SERVICE_CATEGORIES.filter((c) =>
-        c.name.toLowerCase().includes(search.toLowerCase())
-      )
-    : SERVICE_CATEGORIES;
+  const filteredCategories = SERVICE_CATEGORIES;
 
   return (
     <View style={{ flex: 1, backgroundColor: Colors.background }}>
@@ -60,28 +56,24 @@ export default function HomeScreen() {
                 <Ionicons name="chevron-down" size={14} color="rgba(255,255,255,0.85)" />
               </TouchableOpacity>
             </View>
-            <TouchableOpacity style={styles.notifBtn}>
+            <TouchableOpacity
+              style={styles.notifBtn}
+              onPress={() => navigation.navigate('Notifications')}
+            >
               <Ionicons name="notifications-outline" size={22} color="#fff" />
+              {unreadCount > 0 && <View style={styles.notifBadge} />}
             </TouchableOpacity>
           </View>
 
-          {/* Search bar */}
-          <View style={styles.searchBar}>
+          {/* Search bar — tapping opens full Search screen */}
+          <TouchableOpacity
+            style={styles.searchBar}
+            onPress={() => navigation.navigate('Search')}
+            activeOpacity={0.9}
+          >
             <Ionicons name="search" size={18} color={Colors.textSecondary} />
-            <TextInput
-              style={styles.searchInput}
-              placeholder="Rechercher un service..."
-              placeholderTextColor={Colors.textLight}
-              value={search}
-              onChangeText={setSearch}
-              returnKeyType="search"
-            />
-            {search.length > 0 && (
-              <TouchableOpacity onPress={() => setSearch('')}>
-                <Ionicons name="close-circle" size={18} color={Colors.textLight} />
-              </TouchableOpacity>
-            )}
-          </View>
+            <Text style={styles.searchPlaceholder}>Rechercher un service ou prestataire...</Text>
+          </TouchableOpacity>
         </LinearGradient>
 
         {/* Banner */}
@@ -220,6 +212,18 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.2)',
     alignItems: 'center',
     justifyContent: 'center',
+    position: 'relative',
+  },
+  notifBadge: {
+    position: 'absolute',
+    top: 6,
+    right: 6,
+    width: 9,
+    height: 9,
+    borderRadius: 5,
+    backgroundColor: Colors.error,
+    borderWidth: 1.5,
+    borderColor: 'rgba(255,255,255,0.3)',
   },
   searchBar: {
     flexDirection: 'row',
@@ -231,10 +235,10 @@ const styles = StyleSheet.create({
     gap: Spacing.sm,
     ...Shadow.sm,
   },
-  searchInput: {
+  searchPlaceholder: {
     flex: 1,
     fontSize: Typography.fontSize.base,
-    color: Colors.text,
+    color: Colors.textLight,
   },
   bannerWrapper: {
     marginHorizontal: Spacing.base,

@@ -49,12 +49,12 @@ const MOCK_BOOKINGS = [
 ];
 
 const MENU_ITEMS = [
-  { icon: 'person-outline', label: 'Modifier mon profil', action: 'profile' },
-  { icon: 'notifications-outline', label: 'Notifications', action: 'notifications' },
-  { icon: 'star-outline', label: 'Mes avis', action: 'reviews' },
-  { icon: 'heart-outline', label: 'Favoris', action: 'favorites' },
-  { icon: 'help-circle-outline', label: 'Aide & Support', action: 'help' },
-  { icon: 'document-text-outline', label: 'Conditions d\'utilisation', action: 'terms' },
+  { icon: 'person-outline', label: 'Modifier mon profil', action: 'EditProfile' },
+  { icon: 'notifications-outline', label: 'Notifications', action: 'Notifications' },
+  { icon: 'heart-outline', label: 'Mes Favoris', action: 'Favorites' },
+  { icon: 'briefcase-outline', label: 'Devenir prestataire', action: 'BecomeProvider' },
+  { icon: 'settings-outline', label: 'Paramètres', action: 'Settings' },
+  { icon: 'help-circle-outline', label: 'Aide & Support', action: 'Help' },
 ];
 
 export default function UserDashboardScreen() {
@@ -223,8 +223,14 @@ export default function UserDashboardScreen() {
           </View>
         ) : (
           <View style={styles.section}>
-            {MENU_ITEMS.map((item, i) => (
-              <TouchableOpacity key={item.action} style={styles.menuItem}>
+            {MENU_ITEMS.map((item) => (
+              <TouchableOpacity
+                key={item.action}
+                style={styles.menuItem}
+                onPress={() => {
+                  if (item.action !== 'Help') navigation.navigate(item.action as any);
+                }}
+              >
                 <View style={styles.menuIconWrapper}>
                   <Ionicons name={item.icon as any} size={20} color={Colors.primary} />
                 </View>
