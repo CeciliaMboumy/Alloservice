@@ -3,9 +3,11 @@
     "name": "AlloService",
     "slug": "alloservice",
     "version": "1.0.0",
+    "sdkVersion": "54.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "newArchEnabled": false,
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -27,8 +29,6 @@
       "bundler": "metro"
     },
     "plugins": [
-      "expo-router",
-      "expo-font",
       [
         "expo-image-picker",
         {
@@ -38,13 +38,9 @@
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "Permettre à AlloService d'accéder à votre localisation."
+          "locationWhenInUsePermission": "Permettre à AlloService d'accéder à votre localisation."
         }
       ]
-    ],
-    "scheme": "alloservice",
-    "experiments": {
-      "typedRoutes": true
-    }
+    ]
   }
 }

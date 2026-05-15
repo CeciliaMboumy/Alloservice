@@ -48,7 +48,7 @@ export default function SettingsScreen() {
           text: 'Réinitialiser',
           onPress: async () => {
             await AsyncStorage.removeItem('onboarding_done');
-            navigation.reset({ index: 0, routes: [{ name: 'Onboarding' }] });
+            navigation.reset({ index: 0, routes: [{ name: 'Onboarding' as never }] });
           },
         },
       ],

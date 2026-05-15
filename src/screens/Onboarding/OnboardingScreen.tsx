@@ -67,7 +67,8 @@ export default function OnboardingScreen() {
 
   async function finish() {
     await AsyncStorage.setItem('onboarding_done', 'true');
-    navigation.reset({ index: 0, routes: [{ name: 'Auth' }] });
+    // 'Auth' is always registered in the root stack — safe to reset to it
+    navigation.reset({ index: 0, routes: [{ name: 'Auth' as never }] });
   }
 
   function next() {

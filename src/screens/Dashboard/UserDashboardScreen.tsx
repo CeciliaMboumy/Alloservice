@@ -78,7 +78,7 @@ export default function UserDashboardScreen() {
         style: 'destructive',
         onPress: async () => {
           await logOut();
-          navigation.reset({ index: 0, routes: [{ name: 'Auth' }] });
+          navigation.reset({ index: 0, routes: [{ name: 'Auth' as never }] });
         },
       },
     ]);

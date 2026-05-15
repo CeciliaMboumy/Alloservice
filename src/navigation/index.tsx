@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, ActivityIndicator } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -8,9 +8,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { useAuth } from '../context/AuthContext';
 import { useNotifications } from '../context/NotificationContext';
-import { Colors, Typography } from '../constants/theme';
+import { Colors } from '../constants/theme';
 
-// Screens
+// ── Screens ──────────────────────────────────────────────────────────────────
 import OnboardingScreen from '../screens/Onboarding/OnboardingScreen';
 import AuthScreen from '../screens/Auth/AuthScreen';
 import HomeScreen from '../screens/Home/HomeScreen';
@@ -31,15 +31,7 @@ import SettingsScreen from '../screens/Settings/SettingsScreen';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-function NotificationBadge({ count }: { count: number }) {
-  if (count === 0) return null;
-  return (
-    <View style={badge.wrapper}>
-      <View style={badge.dot} />
-    </View>
-  );
-}
-
+// ── Bottom Tab Navigator ──────────────────────────────────────────────────────
 function MainTabs() {
   const { unreadCount } = useNotifications();
 
@@ -57,51 +49,31 @@ function MainTabs() {
           paddingTop: 6,
           height: 68,
         },
-        tabBarLabelStyle: {
-          fontSize: 11,
-          fontWeight: '600',
-          marginTop: 2,
-        },
+        tabBarLabelStyle: { fontSize: 11, fontWeight: '600', marginTop: 2 },
         tabBarIcon: ({ focused, color, size }) => {
-          const iconSize = size - 2;
-
+          const s = size - 2;
           if (route.name === 'Accueil') {
-            return (
-              <Ionicons
-                name={focused ? 'home' : 'home-outline'}
-                size={iconSize}
-                color={color}
-              />
-            );
+            return <Ionicons name={focused ? 'home' : 'home-outline'} size={s} color={color} />;
           }
           if (route.name === 'Découvrir') {
-            return (
-              <Ionicons
-                name={focused ? 'search' : 'search-outline'}
-                size={iconSize}
-                color={color}
-              />
-            );
+            return <Ionicons name={focused ? 'search' : 'search-outline'} size={s} color={color} />;
           }
           if (route.name === 'Réservations') {
-            return (
-              <Ionicons
-                name={focused ? 'calendar' : 'calendar-outline'}
-                size={iconSize}
-                color={color}
-              />
-            );
+            return <Ionicons name={focused ? 'calendar' : 'calendar-outline'} size={s} color={color} />;
           }
           if (route.name === 'Profil') {
             return (
-              <View style={{ position: 'relative' }}>
-                <Ionicons
-                  name={focused ? 'person' : 'person-outline'}
-                  size={iconSize}
-                  color={color}
-                />
+              <View>
+                <Ionicons name={focused ? 'person' : 'person-outline'} size={s} color={color} />
                 {unreadCount > 0 && (
-                  <View style={badge.dot} />
+                  <View
+                    style={{
+                      position: 'absolute', top: -2, right: -4,
+                      width: 8, height: 8, borderRadius: 4,
+                      backgroundColor: Colors.error,
+                      borderWidth: 1.5, borderColor: Colors.surface,
+                    }}
+                  />
                 )}
               </View>
             );
@@ -118,82 +90,67 @@ function MainTabs() {
   );
 }
 
+// ── Loading Spinner ───────────────────────────────────────────────────────────
+function LoadingScreen() {
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: Colors.background }}>
+      <ActivityIndicator size="large" color={Colors.primary} />
+    </View>
+  );
+}
+
+// ── Root Navigator ────────────────────────────────────────────────────────────
+// ALL screens are always registered — this lets navigation.reset() work from
+// any screen regardless of auth / onboarding state.
 export default function AppNavigator() {
-  const { user, loading } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [onboardingDone, setOnboardingDone] = useState<boolean | null>(null);
 
   useEffect(() => {
-    AsyncStorage.getItem('onboarding_done').then((val) => {
-      setOnboardingDone(val === 'true');
-    });
+    AsyncStorage.getItem('onboarding_done').then((val) => setOnboardingDone(val === 'true'));
   }, []);
 
-  if (loading || onboardingDone === null) return null;
+  if (authLoading || onboardingDone === null) return <LoadingScreen />;
+
+  const initialRoute: string = !onboardingDone ? 'Onboarding' : !user ? 'Auth' : 'Main';
 
   return (
     <NavigationContainer>
       <Stack.Navigator
+        initialRouteName={initialRoute}
         screenOptions={{ headerShown: false, animation: 'slide_from_right' }}
       >
-        {!onboardingDone ? (
-          <Stack.Screen name="Onboarding" component={OnboardingScreen} />
-        ) : !user ? (
-          <Stack.Screen
-            name="Auth"
-            component={AuthScreen}
-            options={{ animation: 'fade' }}
-          />
-        ) : (
-          <>
-            <Stack.Screen
-              name="Main"
-              component={MainTabs}
-              options={{ animation: 'fade' }}
-            />
-            {/* Provider flow */}
-            <Stack.Screen name="ProviderListing" component={ProviderListingScreen} />
-            <Stack.Screen name="ProviderProfile" component={ProviderProfileScreen} />
-            {/* Booking flow */}
-            <Stack.Screen name="BookingRequest" component={BookingRequestScreen} />
-            <Stack.Screen name="BookingDetail" component={BookingDetailScreen} />
-            {/* Search */}
-            <Stack.Screen
-              name="Search"
-              component={SearchScreen}
-              options={{ animation: 'fade_from_bottom' }}
-            />
-            {/* Notifications */}
-            <Stack.Screen name="Notifications" component={NotificationsScreen} />
-            {/* Favorites */}
-            <Stack.Screen name="Favorites" component={FavoritesScreen} />
-            {/* Reviews */}
-            <Stack.Screen name="WriteReview" component={WriteReviewScreen} />
-            {/* Profile management */}
-            <Stack.Screen name="EditProfile" component={EditProfileScreen} />
-            <Stack.Screen name="BecomeProvider" component={BecomeProviderScreen} />
-            {/* Settings */}
-            <Stack.Screen name="Settings" component={SettingsScreen} />
-            {/* Provider dashboard */}
-            <Stack.Screen name="ProviderDashboard" component={ProviderDashboardScreen} />
-          </>
-        )}
+        {/* Auth flow — always registered */}
+        <Stack.Screen name="Onboarding" component={OnboardingScreen} />
+        <Stack.Screen name="Auth" component={AuthScreen} options={{ animation: 'fade' }} />
+
+        {/* App shell */}
+        <Stack.Screen name="Main" component={MainTabs} options={{ animation: 'fade' }} />
+
+        {/* Provider flow */}
+        <Stack.Screen name="ProviderListing" component={ProviderListingScreen} />
+        <Stack.Screen name="ProviderProfile" component={ProviderProfileScreen} />
+
+        {/* Booking flow */}
+        <Stack.Screen name="BookingRequest" component={BookingRequestScreen} />
+        <Stack.Screen name="BookingDetail" component={BookingDetailScreen} />
+
+        {/* Search */}
+        <Stack.Screen name="Search" component={SearchScreen} options={{ animation: 'fade_from_bottom' }} />
+
+        {/* Utility screens */}
+        <Stack.Screen name="Notifications" component={NotificationsScreen} />
+        <Stack.Screen name="Favorites" component={FavoritesScreen} />
+        <Stack.Screen name="WriteReview" component={WriteReviewScreen} />
+
+        {/* Profile management */}
+        <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+        <Stack.Screen name="BecomeProvider" component={BecomeProviderScreen} />
+
+        {/* Settings & dashboards */}
+        <Stack.Screen name="Settings" component={SettingsScreen} />
+        <Stack.Screen name="ProviderDashboard" component={ProviderDashboardScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
-
-const badge = StyleSheet.create({
-  wrapper: {
-    position: 'absolute',
-    top: -2,
-    right: -4,
-  },
-  dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: Colors.error,
-    borderWidth: 1.5,
-    borderColor: Colors.surface,
-  },
-});

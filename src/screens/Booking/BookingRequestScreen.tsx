@@ -113,7 +113,7 @@ export default function BookingRequestScreen() {
           </View>
           <Button
             label="Retour à l'accueil"
-            onPress={() => navigation.reset({ index: 0, routes: [{ name: 'Main' }] })}
+            onPress={() => navigation.reset({ index: 0, routes: [{ name: 'Main' as never }] })}
             variant="outline"
             fullWidth
             style={styles.successBtn}
@@ -121,7 +121,7 @@ export default function BookingRequestScreen() {
           />
           <Button
             label="Mes réservations"
-            onPress={() => navigation.reset({ index: 0, routes: [{ name: 'Main' }] })}
+            onPress={() => navigation.reset({ index: 0, routes: [{ name: 'Main' as never }] })}
             variant="ghost"
             fullWidth
             textStyle={{ color: 'rgba(255,255,255,0.8)' }}

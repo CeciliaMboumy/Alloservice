@@ -60,7 +60,7 @@ export default function AuthScreen() {
       } else {
         await signUp(email, password, name, phone, city, role);
       }
-      navigation.reset({ index: 0, routes: [{ name: 'Main' }] });
+      navigation.reset({ index: 0, routes: [{ name: 'Main' as never }] });
     } catch (err: any) {
       const msg =
         err?.code === 'auth/user-not-found' || err?.code === 'auth/wrong-password'
