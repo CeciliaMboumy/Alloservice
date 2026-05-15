@@ -1,0 +1,82 @@
+import type { ServiceCategory, Provider } from '../types';
+
+export const SERVICE_CATEGORIES: ServiceCategory[] = [
+  { id: 'menage',       name: 'Ménage',           icon: '🧹', color: '#4CAF50', description: 'Nettoyage et entretien de domicile' },
+  { id: 'plomberie',    name: 'Plomberie',         icon: '🔧', color: '#2196F3', description: 'Réparation et installation plomberie' },
+  { id: 'electricite',  name: 'Électricité',       icon: '⚡', color: '#FF9800', description: 'Travaux électriques et dépannage' },
+  { id: 'coiffure',     name: 'Coiffure',          icon: '💇', color: '#E91E63', description: 'Tressage, coiffure et soins capillaires' },
+  { id: 'maquillage',   name: 'Maquillage',        icon: '💄', color: '#9C27B0', description: 'Maquillage professionnel et beauté' },
+  { id: 'chauffeur',    name: 'Chauffeur',         icon: '🚗', color: '#607D8B', description: 'Transport privé et mise à disposition' },
+  { id: 'bricolage',    name: 'Bricolage',         icon: '🔨', color: '#795548', description: 'Petits travaux et réparations diverses' },
+  { id: 'aide_domicile',name: 'Aide à domicile',  icon: '🏠', color: '#009688', description: "Aide aux personnes et garde d'enfants" },
+];
+
+export const MOCK_PROVIDERS: Provider[] = [
+  {
+    id: '1', name: 'Marie-Claire Nguema', category: 'Ménage', categoryId: 'menage',
+    rating: 4.8, reviewCount: 47, city: 'Douala', country: 'Cameroun',
+    price: 5000, priceUnit: 'FCFA/heure', phone: '+237 6XX XXX XXX', whatsapp: '+23760000001',
+    bio: "Professionnelle du ménage avec 6 ans d'expérience. Je propose des services de nettoyage complet, repassage et entretien de maison. Disponible 6j/7.",
+    photos: [], avatar: '', verified: true, available: true, experience: 6,
+    skills: ['Nettoyage complet', 'Repassage', 'Vaisselle', 'Rangement'], createdAt: new Date('2023-01-15'),
+  },
+  {
+    id: '2', name: 'Jean-Paul Koné', category: 'Plomberie', categoryId: 'plomberie',
+    rating: 4.6, reviewCount: 32, city: 'Abidjan', country: "Côte d'Ivoire",
+    price: 15000, priceUnit: 'FCFA/intervention', phone: '+225 0X XX XX XX', whatsapp: '+22500000002',
+    bio: "Plombier certifié avec 10 ans d'expérience. Réparation de fuites, installation sanitaire, débouchage. Intervention rapide garantie.",
+    photos: [], avatar: '', verified: true, available: true, experience: 10,
+    skills: ['Réparation fuites', 'Installation sanitaire', 'Débouchage', 'Chauffe-eau'], createdAt: new Date('2022-06-10'),
+  },
+  {
+    id: '3', name: 'Fatou Diallo', category: 'Coiffure', categoryId: 'coiffure',
+    rating: 4.9, reviewCount: 128, city: 'Dakar', country: 'Sénégal',
+    price: 8000, priceUnit: 'FCFA/séance', phone: '+221 7X XXX XX XX', whatsapp: '+22170000003',
+    bio: "Coiffeuse experte en tressage africain, locks, vanilles et soins capillaires. Je me déplace à domicile pour votre confort.",
+    photos: [], avatar: '', verified: true, available: true, experience: 8,
+    skills: ['Tressage', 'Locks', 'Vanilles', 'Soins capillaires', 'Perruques'], createdAt: new Date('2021-03-20'),
+  },
+  {
+    id: '4', name: 'Patrick Moukala', category: 'Électricité', categoryId: 'electricite',
+    rating: 4.5, reviewCount: 28, city: 'Brazzaville', country: 'Congo',
+    price: 12000, priceUnit: 'FCFA/intervention', phone: '+242 06 XXX XXXX', whatsapp: '+24206000004',
+    bio: "Électricien qualifié. Installation, dépannage, tableau électrique, éclairage. Devis gratuit. Travaux soignés et conformes aux normes.",
+    photos: [], avatar: '', verified: false, available: true, experience: 5,
+    skills: ['Installation électrique', 'Tableau électrique', 'Éclairage', 'Climatisation'], createdAt: new Date('2023-07-01'),
+  },
+  {
+    id: '5', name: 'Aïcha Touré', category: 'Maquillage', categoryId: 'maquillage',
+    rating: 4.7, reviewCount: 85, city: 'Abidjan', country: "Côte d'Ivoire",
+    price: 20000, priceUnit: 'FCFA/séance', phone: '+225 0X XX XX XX', whatsapp: '+22500000005',
+    bio: "Maquilleuse professionnelle pour mariages, cérémonies, shootings photo. Produits de qualité premium. Déplacement à domicile.",
+    photos: [], avatar: '', verified: true, available: true, experience: 7,
+    skills: ['Mariage', 'Soirée', 'Shooting photo', 'Maquillage naturel'], createdAt: new Date('2022-01-05'),
+  },
+  {
+    id: '6', name: 'Amadou Sow', category: 'Chauffeur', categoryId: 'chauffeur',
+    rating: 4.4, reviewCount: 61, city: 'Dakar', country: 'Sénégal',
+    price: 25000, priceUnit: 'FCFA/jour', phone: '+221 7X XXX XX XX', whatsapp: '+22170000006',
+    bio: "Chauffeur professionnel avec véhicule confortable. Aéroport, courses, mise à disposition journée ou demi-journée. Ponctuel et discret.",
+    photos: [], avatar: '', verified: true, available: false, experience: 12,
+    skills: ['Transfert aéroport', 'Mise à disposition', 'Tourisme', 'Courses'], createdAt: new Date('2020-09-15'),
+  },
+];
+
+export const BOOKING_STATUS_LABELS: Record<string, string> = {
+  en_attente: 'En attente',
+  confirme: 'Confirmé',
+  annule: 'Annulé',
+  termine: 'Terminé',
+};
+
+export const BOOKING_STATUS_COLORS: Record<string, string> = {
+  en_attente: '#FF9800',
+  confirme: '#4CAF50',
+  annule: '#F44336',
+  termine: '#607D8B',
+};
+
+export const CITIES = [
+  'Douala', 'Yaoundé', 'Abidjan', 'Dakar', 'Brazzaville', 'Pointe-Noire',
+  'Bouaké', 'Thiès', 'Bafoussam', 'Saint-Louis', 'Yamoussoukro', 'Dolisie',
+];
