@@ -14,7 +14,7 @@ SplashScreen.preventAutoHideAsync();
 export default function App() {
   useEffect(() => {
     // Hide the splash after a brief delay to let the first frame render
-    const t = setTimeout(() => SplashScreen.hideAsync(), 500);
+    const t = setTimeout(() => SplashScreen.hide(), 500);
     return () => clearTimeout(t);
   }, []);
 
