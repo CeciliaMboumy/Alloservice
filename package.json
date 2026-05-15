@@ -6,15 +6,16 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "setup": "node scripts/setup.js"
   },
   "dependencies": {
-    "@expo/vector-icons": "^14.0.4",
+    "@expo/vector-icons": "*",
     "@react-native-async-storage/async-storage": "*",
     "@react-navigation/bottom-tabs": "^7.2.0",
     "@react-navigation/native": "^7.0.14",
     "@react-navigation/native-stack": "^7.2.0",
-    "expo": "~54.0.0",
+    "expo": "latest",
     "expo-font": "*",
     "expo-image-picker": "*",
     "expo-linear-gradient": "*",
@@ -22,7 +23,7 @@
     "expo-splash-screen": "*",
     "expo-status-bar": "*",
     "firebase": "^11.7.1",
-    "react": "18.3.1",
+    "react": "*",
     "react-native": "*",
     "react-native-gesture-handler": "*",
     "react-native-reanimated": "*",
@@ -32,7 +33,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.25.0",
-    "@types/react": "~18.3.12",
+    "@types/react": "*",
     "typescript": "^5.3.3"
   },
   "private": true
